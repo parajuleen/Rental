@@ -5,6 +5,7 @@ import authReducer from './Features/authSlice'
 import adminReducer from './Features/adminSlice'
 import userReducer from './Features/userSlice'
 import itemReducer from './Features/itemSlice'
+import cartReducer from './Features/cartSlice'
 import { logOutuser } from './Features/authSlice';
 
 
@@ -18,7 +19,8 @@ const combinedReducers=combineReducers({
     auth:authReducer,
     admin:adminReducer,
     user:userReducer,
-    item:itemReducer
+    item:itemReducer,
+    cart:cartReducer
 }
 )
 

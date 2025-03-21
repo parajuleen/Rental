@@ -16,6 +16,7 @@ import Createposts from "./Pages/Createposts";
 import Browseposts from "./Pages/Browseposts";
 import Posts from "./Components/Posts";
 import Details from "./Pages/Details";
+import Cart from "./Components/Cart";
 
 
 
@@ -36,6 +37,7 @@ const App = () => {
           <Route path='/editprofile' element={<EditProfile/>}/>
           <Route path="/create" element={<Createposts/>} />
           <Route path="/posts" element={<Browseposts/>} />
+          <Route path="/cart" element={<Cart/>} />
           <Route path="posts/:id" element={<Details/>}/>
 
 

@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { useSelector } from 'react-redux';
+import { useSelector ,useDispatch} from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
+import { addProduct } from '../Store/Features/cartSlice';
 
 const Details = () => {
   const items = useSelector(state => state.item.data);
+  const dispatch=useDispatch()
   const { id } = useParams();
   const product = items.filter((item) => item._id === id);
 
   const [checkoutProduct, setCheckoutProduct] = useState({
     id: product[0]._id,
     name: product[0].itemName,
-    totalCost: product[0].unitPrice,
-    quantity: 1
+    price: product[0].unitPrice,
+    image:product[0].productImages[0],
+    quantity:1,
+    availableQuantity:product[0].availableQuantity,
+
   });
 
   const increment = () => {
@@ -20,7 +25,6 @@ const Details = () => {
       setCheckoutProduct((prev) => ({
         ...prev,
         quantity: prev.quantity + 1,
-        totalCost: prev.totalCost + product[0].unitPrice
       }));
     }
   };
@@ -30,19 +34,13 @@ const Details = () => {
       setCheckoutProduct((prev) => ({
         ...prev,
         quantity: prev.quantity - 1,
-        totalCost: prev.totalCost - product[0].unitPrice
       }));
     }
   };
 
   const handleAddToCart = () => {
-    console.log(checkoutProduct);
-    alert('Product added to the cart', checkoutProduct);
-    setCheckoutProduct((prev) => ({
-      ...prev,
-      quantity: 1,
-      totalCost: product[0].unitPrice
-    }));
+    dispatch(addProduct(checkoutProduct))
+
   };
 
   return (
@@ -121,17 +119,13 @@ const Details = () => {
                   </button>
                 </div>
 
-                <div className="space-y-4">
-                  <div className="flex justify-between items-center py-4 border-t border-gray-100">
-                    <span className="text-gray-600 font-medium">Total Cost</span>
-                    <span className="text-2xl font-bold text-blue-900">
-                      ${checkoutProduct.totalCost}
-                    </span>
-                  </div>
-
+                <div className="space-y-4 flex flex-col">
+                 <button className='bg-green-500 px-3 py-5 rounded-md text-white font-semibold hover:bg-green-600'>
+                  Get Product
+                 </button>
                   <button
                     onClick={handleAddToCart}
-                    className="w-full py-4 px-6 bg-blue-900 text-white rounded-lg font-semibold
+                    className="py-4 px-6 bg-blue-900 text-white rounded-lg font-semibold
                              flex items-center justify-center space-x-2 hover:bg-blue-800 
                              transition-colors duration-200 focus:outline-none focus:ring-2 
                              focus:ring-blue-900 focus:ring-offset-2"
