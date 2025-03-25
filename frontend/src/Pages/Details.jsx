@@ -3,6 +3,7 @@ import { useSelector ,useDispatch} from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
 import { addProduct } from '../Store/Features/cartSlice';
+import stripeCheckout from '../Utility/Stripe';
 
 const Details = () => {
   const items = useSelector(state => state.item.data);
@@ -120,7 +121,11 @@ const Details = () => {
                 </div>
 
                 <div className="space-y-4 flex flex-col">
-                 <button className='bg-green-500 px-3 py-5 rounded-md text-white font-semibold hover:bg-green-600'>
+                 <button className='bg-green-500 px-3 py-5 rounded-md text-white font-semibold hover:bg-green-600'
+                 onClick={()=>{
+                  stripeCheckout(checkoutProduct)
+                 }}
+                 >
                   Get Product
                  </button>
                   <button

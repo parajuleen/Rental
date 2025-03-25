@@ -22,3 +22,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+*.user
+*.log
+*.apj
+*.dbj
+*.cache
+*.local
+.env

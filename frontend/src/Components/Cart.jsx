@@ -2,9 +2,7 @@ import {React} from "react";
 import { removeProduct,updateCart } from "../Store/Features/cartSlice";
 import { Plus, Minus, Trash, ShoppingCart } from "lucide-react";
 import { useSelector, useDispatch } from "react-redux";
-// import {loadStripe} from '@stripe/stripe-js'
-// import axios from "axios";
-// const key=import.meta.env.VITE_Stripe_API_Key
+import stripeCheckout from "../Utility/Stripe";
 
 
 const Cart = () => {
@@ -128,7 +126,9 @@ const Cart = () => {
               </div>
 
               <button className="w-full flex  flex-col items-center mt-6 bg-blue-600 text-white py-3 px-4 rounded-lg font-medium hover:bg-blue-700 transition-colors duration-200"
-            //   onClick={checkOutCart}
+            onClick={()=>{
+              stripeCheckout(cartItems)
+            }}
               >
                     Proceed to Checkout
               
