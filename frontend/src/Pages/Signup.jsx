@@ -1,14 +1,14 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {useForm} from 'react-hook-form'
 import { signUp } from "../Store/Features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
-import {Check} from 'lucide-react'
 import {useNavigate} from 'react-router-dom'
+
 
 
 const Signup = () => {
     const dispatch=useDispatch()
-    const {isSuccess}=useSelector(state=>state.auth)
+    const {success,error}=useSelector(state=>state.auth.signupData)
     const navigate=useNavigate()
 
    const{register,handleSubmit,reset,formState:{
@@ -17,25 +17,14 @@ const Signup = () => {
 
    const onFormSubmit=(data)=>{
    dispatch(signUp(data))
-   reset()
    }
+
+  
+   
 
   return (
     <>
       <div className="flex items-center justify-center flex-col min-h-screen relative">
-        {isSuccess && <div className=" bg-green-500 text-white text-sm font-semibold mb-2 px-6 py-4 rounded-lg shadow-lg flex flex-col items-center space-y-2">
-  <Check className="w-8 h-8 text-white" />
-  <span className="font-medium">Signup Successful!</span>
-  <button
-  onClick={()=>{
-    navigate('/login')
-  }}
-    className="mt-2 bg-white text-green-500 px-4 py-2 rounded-lg font-semibold hover:bg-gray-100 transition duration-200"
-  >
-    Continue to Login
-  </button>
-</div>}
-
         <div className="bg-gray-300 p-8 rounded-lg shadow-md w-full max-w-md">
           <h2 className="text-2xl font-bold mb-6 text-center">
             Create Account

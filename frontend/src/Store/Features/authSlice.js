@@ -3,13 +3,18 @@ import axios from 'axios'
 
 
 
-export const signUp = createAsyncThunk('auth/signup',async(data)=>{
+export const signUp = createAsyncThunk('auth/signup',async(data,{rejectWithValue})=>{
     try {
         const response= await axios.post("http://localhost:3535/api/users/register",data)
         return response.data
 
     } catch (error) {
-        console.log(error.message)
+        if(error.response){
+            return rejectWithValue(error.response.data)
+        }
+        else{
+            return rejectWithValue(error.message)
+        }
         
     }
 })
@@ -25,7 +30,10 @@ export const login=createAsyncThunk('auth/login' ,async(data,{rejectWithValue})=
         if(error.response){
             return rejectWithValue(error.response.data)
         }
-      
+        else{
+            return rejectWithValue(error.message)
+        }
+        
         
     }
 })
@@ -38,6 +46,12 @@ const initialState={
     error:null,
     isSuccess:false,
     isAuthenticated:false,
+    signupData:{
+        loading:false,
+        success:false,
+        error:null
+
+    }
     
 }
 
@@ -49,25 +63,28 @@ const initialState={
         logOutuser:(state)=>{
             state.isAuthenticated=false
             state.error=null
-        }
+        },
+       
     },
     extraReducers:(builder)=>{
         builder
         .addCase(signUp.pending,(state,action)=>{
-            state.loading=true
+            state.signupData.loading=true
 
         })
-        .addCase(signUp.fulfilled,(state,actions)=>{
-            state.user=actions.payload.user
-            state.loading=false
-            state.isSuccess=true
+        .addCase(signUp.fulfilled,(state)=>{
+            state.signupData.loading=false
+            state.signupData.success=true
 
         })
         .addCase(signUp.rejected,(state,actions)=>{
-            state.error=actions.error.message
+            state.signupData.loading=false
+            state.signupData.success=false
+            state.signupData.error=actions.payload.message || actions.payload
         })
-        .addCase(login.pending,(state,actions)=>{
+        .addCase(login.pending,(state)=>{
             state.loading=true 
+            state.isAuthenticated=false
         })
         .addCase(login.fulfilled,(state,actions)=>{
             state.user=actions.payload
@@ -76,8 +93,10 @@ const initialState={
             state.isSuccess=true
         })
         .addCase(login.rejected,(state,actions)=>{
-            console.log(actions.payload.message)
-                state.error=actions.payload.message
+            state.loading=false
+            state.isAuthenticated=false
+            state.isSuccess=false
+            state.error= actions.payload.message || actions.payload
 
         }) 
     }

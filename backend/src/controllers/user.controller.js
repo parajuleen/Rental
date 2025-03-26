@@ -13,6 +13,7 @@ const registerUser = async (req, res) => {
     const userExist = await User.findOne({
       $or: [{ email }, { name }],
     });
+
     if (userExist) {
       return res.status(400).json({ message: "User already exists" });
     }
@@ -32,41 +33,53 @@ const registerUser = async (req, res) => {
       .json({ message: "User created successfully", user: checkUser });
   } catch (error) {
     console.log("error occured in creating user", error);
+    return res.status(500).json({
+      message:"Internal server error"
+    })
   }
 };
 
 const loginUser = async (req, res) => {
-  const { email, password } = req.body;
-
-  if( !email || !password){
-    return res.status(400).json({ message: "Please fill in all fields" });
-  }
-
-  const user = await User.findOne({ email });
-  if (!user) {
-    return res.status(404).json({ message: "User not found" });
-  }
-
+  try {
+    const { email, password } = req.body;
   
-
-  const verifyPassword = await user.checkPass(password);
-  if (!verifyPassword) {
-    return res.status(401).json({ message: "Invalid credentials" });
-  }
-  const accessToken = await user.genAcessToken();
-
-  return res
-    .status(200)
-    .cookie("accessToken", accessToken, {
-      httpOnly: true,
-      secure: true,
+    if( !email || !password){
+      return res.status(400).json({ message: "Please fill in all fields" });
+    }
+  
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+  
+    
+  
+    const verifyPassword = await user.checkPass(password);
+    if (!verifyPassword) {
+      return res.status(401).json({ message: "Invalid credentials" });
+    }
+    const accessToken = await user.genAcessToken();
+  
+    return res
+      .status(200)
+      .cookie("accessToken", accessToken, {
+        httpOnly: true,
+        secure: true,
+        sameSite:"None"
+      })
+      .json({
+        message: "User logged in successfully",
+        role: user.role,
+        name:user.name,
+        id:user._id,
+      });
+  } catch (error) {
+    console.log(error)
+    return res.status(500).json({
+      message:"Internal server error"
     })
-    .json({
-      message: "User logged in successfully",
-      role: user.role,
-      name:user.name,
-      id:user._id,
-    });
+    
+  }
 };
 
 const logoutUser=async(req,res)=>{
@@ -87,37 +100,42 @@ const logoutUser=async(req,res)=>{
 
 
 const createNewAdmin = async (req, res) => {
-  const { name, email, password, role } = req.body;
-
-  if (!name || !email || !password) {
-    return res.status(400).json({ message: "Please fill in all fields" });
+  try {
+    const { name, email, password, role } = req.body;
+  
+    if (!name || !email || !password) {
+      return res.status(400).json({ message: "Please fill in all fields" });
+    }
+  
+    const userExiststatus = await User.findOne({
+      $or: [{ email }, { name }],
+    });
+    if (userExiststatus) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+  
+    const user = await User.create({
+      name,
+      email,
+      password,
+      role,
+      createdBy: req.user.id,
+    });
+  
+    const newuser = await User.findById({
+      _id: user._id,
+    }).select("-password");
+    if (!newuser) {
+      return res.status(404).json({ message: "User not created" });
+    }
+  
+    return res.status(200).json({
+      newuser,
+    });
+  } catch (error) {
+    console.log(error)
+    
   }
-
-  const userExiststatus = await User.findOne({
-    $or: [{ email }, { name }],
-  });
-  if (userExiststatus) {
-    return res.status(400).json({ message: "User already exists" });
-  }
-
-  const user = await User.create({
-    name,
-    email,
-    password,
-    role,
-    createdBy: req.user.id,
-  });
-
-  const newuser = await User.findById({
-    _id: user._id,
-  }).select("-password");
-  if (!newuser) {
-    return res.status(404).json({ message: "User not created" });
-  }
-
-  return res.status(200).json({
-    newuser,
-  });
 };
 
 const getAlladmins = async (req, res) => {
