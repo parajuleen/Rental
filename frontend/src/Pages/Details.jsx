@@ -4,6 +4,7 @@ import { useParams } from 'react-router-dom';
 import { Plus, Minus, ShoppingCart } from 'lucide-react';
 import { addProduct } from '../Store/Features/cartSlice';
 import stripeCheckout from '../Utility/Stripe';
+import { Slide, toast } from 'react-toastify';
 
 const Details = () => {
   const items = useSelector(state => state.item.data);
@@ -41,6 +42,13 @@ const Details = () => {
 
   const handleAddToCart = () => {
     dispatch(addProduct(checkoutProduct))
+    toast.success("Product added to the cart",{
+      theme:"colored",
+      position:"bottom-right",
+      autoClose:2000,
+      transition:Slide,
+  
+    })
 
   };
 

@@ -64,6 +64,12 @@ const initialState={
             state.isAuthenticated=false
             state.error=null
         },
+        resetLoginerror:(state)=>{
+            state.error=null
+        },
+        resetSignuperror:(state)=>{
+            state.signupData.error=null
+        }
        
     },
     extraReducers:(builder)=>{
@@ -75,6 +81,7 @@ const initialState={
         .addCase(signUp.fulfilled,(state)=>{
             state.signupData.loading=false
             state.signupData.success=true
+            state.signupData.error=null
 
         })
         .addCase(signUp.rejected,(state,actions)=>{
@@ -91,6 +98,7 @@ const initialState={
             state.loading=false
             state.isAuthenticated=true
             state.isSuccess=true
+            state.error=null
         })
         .addCase(login.rejected,(state,actions)=>{
             state.loading=false
@@ -102,6 +110,6 @@ const initialState={
     }
 })
 
-export const {logOutuser}=authSlice.actions
+export const {logOutuser,resetLoginerror,resetSignuperror}=authSlice.actions
 
 export default authSlice.reducer

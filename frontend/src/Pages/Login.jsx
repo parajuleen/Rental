@@ -1,8 +1,9 @@
 import React, { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { login } from '../Store/Features/authSlice'
+import { login ,resetLoginerror} from '../Store/Features/authSlice'
 import {useDispatch, useSelector} from 'react-redux'
 import { useNavigate } from 'react-router-dom'
+import {Slide, toast} from 'react-toastify'
 
 const Login = () => {
 
@@ -18,9 +19,28 @@ const {user,isSuccess,isAuthenticated,error}=useSelector(state=>state.auth)
    dispatch(login(data))
     
   }
+
+  useEffect(()=>{
+    if(error){
+      toast.error(error,{
+        theme:"colored",
+        position:'top-right',
+        autoClose:2000,
+        transition:Slide
+      })
+     }
+     let timeout
+     timeout=setTimeout(()=>{
+      dispatch(resetLoginerror())
+
+     },4000)
+     return ()=>clearTimeout(timeout)
+    
+  },[error])
+
+
   useEffect(() => {
     if ( isSuccess && isAuthenticated) {
-      // Navigate based on user role
       if (user?.role === "admin" || user?.role === "superadmin"  ) {
         navigate("/dashboard");
       } else if (user?.role === "user") {
@@ -80,7 +100,6 @@ const {user,isSuccess,isAuthenticated,error}=useSelector(state=>state.auth)
                   }}
                 />
                 Show Password */}
-                 {error && <h1 className='text-red-400 text-sm text-center italic m-2'>{error}</h1>}
             </div>
            
 

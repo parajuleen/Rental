@@ -1,8 +1,9 @@
 import React, { useEffect } from "react";
 import {useForm} from 'react-hook-form'
-import { signUp } from "../Store/Features/authSlice";
+import { signUp,resetSignuperror } from "../Store/Features/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import {useNavigate} from 'react-router-dom'
+import {Slide, toast} from 'react-toastify'
 
 
 
@@ -18,6 +19,37 @@ const Signup = () => {
    const onFormSubmit=(data)=>{
    dispatch(signUp(data))
    }
+
+   useEffect(()=>{
+
+    let timeout
+    if(success){
+      toast.success("Signup Success.Please login",{
+        theme:"colored",
+        autoClose:3000,
+        position:"top-right",
+        transition:Slide
+      })   
+      timeout=setTimeout(()=>{
+        navigate('/login')
+
+      },4000)
+    }
+    if(error){
+      toast.error(error,{
+        theme:"colored",
+        autoClose:3000,
+        position:"top-right",
+        transition:Slide
+      })
+      timeout=setTimeout(()=>{
+        dispatch(resetSignuperror())
+      },4000)
+
+    }
+    return ()=>clearTimeout(timeout)
+
+   },[error,success])
 
   
    

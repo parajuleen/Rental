@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Home,Menu,X,LogOut,ShoppingCart   } from "lucide-react";
 import {logOutuser} from '../Store/Features/authSlice'
 import axios from "axios";
+import { persistor } from "../Store/store";
 
 
 
@@ -26,6 +27,7 @@ const Navbar = () => {
       })
       if(response.status === 200){
         dispatch(logOutuser())
+        persistor.purge()
         navigate('/login')
         
       }      
@@ -297,7 +299,7 @@ const Navbar = () => {
           )}
 
           {isAuthenticated ? (
-            <button className="  mx-2 text-red-700  hover:bg-blue-300 w-12 flex justify-center items-center rounded-full"
+            <button className="  mx-2 text-white hover:bg-blue-300 w-12 flex justify-center items-center rounded-full"
               onClick={handleLogout}
             >
               <LogOut size={24}/>

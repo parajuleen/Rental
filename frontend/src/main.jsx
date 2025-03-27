@@ -14,7 +14,7 @@ createRoot(document.getElementById('root')).render(
     <Provider store={store}>
     <PersistGate persistor={persistor}>
       <App/>
-      <ToastContainer />
+      <ToastContainer limit={1} />
 
     </PersistGate>
     </Provider>
