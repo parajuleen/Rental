@@ -16,7 +16,7 @@ const authUser= async(req,res,next)=>{
         next()
         
     } catch (error) {
-        console.error(error)
+        console.error("Error occured in jwt",error)
     }
 }
 

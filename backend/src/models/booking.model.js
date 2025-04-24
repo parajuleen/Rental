@@ -5,34 +5,21 @@ const bookingSchema= new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    items:[
-        {
-            itemId:{
-                type:mongoose.Schema.Types.ObjectId,
-                ref:"Items"
-            },
-            startDate:{
-                type:Date,
-                required:true,
-            },
-            endDate:{
-                type:Date,
-                required:true,
-            },
-            quantity:{
-                type:Number,
-            },
-            totalamount:{
-                type:Number,
-            },
-
-
-        }
+    paymentId:{
+        type:String
+    },
+    sessionId:{
+        type:String
+    },
+    items:[    
     ],
+    totalAmount:{
+        type:Number
+    },
     status:{
         type:String,
         default:'pending',
-
+        enum:['pending','success']
     }
 },
 {

@@ -1,7 +1,9 @@
+require('dotenv').config()
 const express=require('express')
 const app=express()
 const cookie_parser=require("cookie-parser")
 const cors=require('cors')
+const{handleWebhook}=require('./webhooks/webhook.stripe')
 
 app.use(cors({
     origin: 'http://localhost:5173',
@@ -11,6 +13,10 @@ app.use(cookie_parser())
 app.use(express.urlencoded({
     extended: true
 }))
+
+app.post('/webhook',express.raw({type:"application/json"}),handleWebhook)
+
+
 app.use(express.json())
 
 const userRouter=require('./routes/user.routes')

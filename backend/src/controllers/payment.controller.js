@@ -3,7 +3,10 @@ const stripe = require("stripe")(process.env.Stripe_Secret_Key);
 
 const createCheckout = async (req, res) => {
   try {
+    const{id}=req.user
+
     const productData = req.body;
+  
 
     const lineItems=[]
 
@@ -36,11 +39,12 @@ const createCheckout = async (req, res) => {
         }
       }
     } 
-    else if(Object.keys(productData).length)
+    else if(Object.keys(productData).length) //if only one item is sent//
     {
         const itemData = await Item.findById({
             _id: productData.id,
           });
+
   
           if (itemData) {
             if (
@@ -74,9 +78,7 @@ const createCheckout = async (req, res) => {
             success_url:"http://localhost:5173/posts",
             cancel_url:"http://localhost:5173/cart",
             metadata:{
-                data:JSON.stringify(
-                    productData
-                )
+              userID:id
             }
 
         })

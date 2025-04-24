@@ -11,6 +11,7 @@ const stripeCheckout=async(productData)=>{
      const stripe= await loadStripe(stripeKey)
      
      const sessionID=data.id
+
  
      const result=await stripe.redirectToCheckout({
          sessionId: sessionID
